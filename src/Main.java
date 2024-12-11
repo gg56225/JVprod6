@@ -1,59 +1,110 @@
+import java.time.LocalDate;
 import java.util.Arrays;
 
-class Employee {
-    private int year;
-    private int month;
-    private int day;
-    private double salary;
+enum Gender {
+    MALE, FEMALE, OTHER
+}
 
-    public Employee(int year, int month, int day, double salary) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.salary = salary;
+class Customer {
+    private String name;
+    private Gender gender;
+
+    public Customer(String name, Gender gender) {
+        this.name = name;
+        this.gender = gender;
     }
 
-    public int compareDates(Employee other) {
-        return Integer.compare(this.year * 10000 + this.month * 100 + this.day,
-                other.year * 10000 + other.month * 100 + other.day);
+    public String getName() {
+        return name;
     }
 
-    public double getSalary() {
-        return salary;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setSalary(double salary) {
-        this.salary = salary;
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }
 
-class Manager extends Employee {
-    public Manager(int year, int month, int day, double salary) {
-        super(year, month, day, salary);
+enum Holiday {
+    NO_HOLIDAY, NEW_YEAR, MARCH_8, FEBRUARY_23
+}
+
+class Employee {
+    private String name;
+    private Gender gender;
+
+    public Employee(String name, Gender gender) {
+        this.name = name;
+        this.gender = gender;
     }
 
-    public static void raiseSalary(Employee[] employees, double percent) {
-        for (Employee employee : employees) {
-            if (!(employee instanceof Manager)) {
-                double newSalary = employee.getSalary() * (1 + percent / 100);
-                employee.setSalary(newSalary);
-            }
-        }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Employee emp1 = new Employee(2020, 5, 15, 50000);
-        Employee emp2 = new Employee(2019, 3, 10, 55000);
-        Manager mgr = new Manager(2018, 7, 20, 70000);
+        Employee[] employees = {
+                new Employee("Alice", Gender.FEMALE),
+                new Employee("Bob", Gender.MALE),
+                new Employee("Charlie", Gender.OTHER)
+        };
 
-        Employee[] employees = {emp1, emp2, mgr};
+        congratulateEmployees(employees, LocalDate.now());
+    }
 
-        Manager.raiseSalary(employees, 10);
+    public static void congratulateEmployees(Employee[] employees, LocalDate date) {
+        Holiday holiday = getHoliday(date);
 
         for (Employee employee : employees) {
-            System.out.println("Salary: " + employee.getSalary());
+            switch (holiday) {
+                case NEW_YEAR:
+                    System.out.println("С Новым Годом, " + employee.getName() + "!");
+                    break;
+                case MARCH_8:
+                    if (employee.getGender() == Gender.FEMALE) {
+                        System.out.println("С 8 марта, " + employee.getName() + "!");
+                    }
+                    break;
+                case FEBRUARY_23:
+                    if (employee.getGender() == Gender.MALE) {
+                        System.out.println("С 23 февраля, " + employee.getName() + "!");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public static Holiday getHoliday(LocalDate date) {
+        if (date.equals(LocalDate.of(date.getYear(), 1, 1))) {
+            return Holiday.NEW_YEAR;
+        } else if (date.equals(LocalDate.of(date.getYear(), 3, 8))) {
+            return Holiday.MARCH_8;
+        } else if (date.equals(LocalDate.of(date.getYear(), 2, 23))) {
+            return Holiday.FEBRUARY_23;
+        } else {
+            return Holiday.NO_HOLIDAY;
         }
     }
 }
