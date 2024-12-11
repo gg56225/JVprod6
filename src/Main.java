@@ -1,36 +1,59 @@
+import java.util.Arrays;
+
+class Employee {
+    private int year;
+    private int month;
+    private int day;
+    private double salary;
+
+    public Employee(int year, int month, int day, double salary) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.salary = salary;
+    }
+
+    public int compareDates(Employee other) {
+        return Integer.compare(this.year * 10000 + this.month * 100 + this.day,
+                other.year * 10000 + other.month * 100 + other.day);
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+}
+
+class Manager extends Employee {
+    public Manager(int year, int month, int day, double salary) {
+        super(year, month, day, salary);
+    }
+
+    public static void raiseSalary(Employee[] employees, double percent) {
+        for (Employee employee : employees) {
+            if (!(employee instanceof Manager)) {
+                double newSalary = employee.getSalary() * (1 + percent / 100);
+                employee.setSalary(newSalary);
+            }
+        }
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-    }
+        Employee emp1 = new Employee(2020, 5, 15, 50000);
+        Employee emp2 = new Employee(2019, 3, 10, 55000);
+        Manager mgr = new Manager(2018, 7, 20, 70000);
 
-    public static int countEvens(int[] nums) {
-        int count = 0;
-        for (int num : nums) {
-            if (num % 2 == 0) {
-                count++;
-            }
-        }
-        return count;
-    }
+        Employee[] employees = {emp1, emp2, mgr};
 
-    public static int findDifference(int[] nums) {
-        if (nums.length == 0) {
-            throw new IllegalArgumentException("Array is empty");
-        }
-        int max = nums[0];
-        int min = nums[0];
-        for (int num : nums) {
-            max = Math.max(max, num);
-            min = Math.min(min, num);
-        }
-        return max - min;
-    }
+        Manager.raiseSalary(employees, 10);
 
-    public static boolean hasTwoConsecutiveZeros(int[] nums) {
-        for (int i = 0; i < nums.length - 1; i++) {
-            if (nums[i] == 0 && nums[i + 1] == 0) {
-                return true;
-            }
+        for (Employee employee : employees) {
+            System.out.println("Salary: " + employee.getSalary());
         }
-        return false;
     }
 }
